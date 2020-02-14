@@ -1,6 +1,7 @@
 // Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+/// The rule list containing all available rules built into SwiftLint.
 public let masterRuleList = RuleList(rules: [
     AnyObjectProtocolRule.self,
     ArrayInitRule.self,
@@ -41,6 +42,8 @@ public let masterRuleList = RuleList(rules: [
     EmptyParenthesesWithTrailingClosureRule.self,
     EmptyStringRule.self,
     EmptyXCTestMethodRule.self,
+    EnumCaseAssociatedValuesLengthRule.self,
+    ExpiringTodoRule.self,
     ExplicitACLRule.self,
     ExplicitEnumRawValueRule.self,
     ExplicitInitRule.self,
@@ -52,9 +55,11 @@ public let masterRuleList = RuleList(rules: [
     FatalErrorMessageRule.self,
     FileHeaderRule.self,
     FileLengthRule.self,
+    FileNameNoSpaceRule.self,
     FileNameRule.self,
     FileTypesOrderRule.self,
     FirstWhereRule.self,
+    FlatMapOverMapReduceRule.self,
     ForWhereRule.self,
     ForceCastRule.self,
     ForceTryRule.self,
@@ -68,6 +73,7 @@ public let masterRuleList = RuleList(rules: [
     ImplicitGetterRule.self,
     ImplicitReturnRule.self,
     ImplicitlyUnwrappedOptionalRule.self,
+    IndentationWidthRule.self,
     InertDeferRule.self,
     IsDisjointRule.self,
     JoinedDefaultParameterRule.self,
@@ -110,9 +116,12 @@ public let masterRuleList = RuleList(rules: [
     OpeningBraceRule.self,
     OperatorFunctionWhitespaceRule.self,
     OperatorUsageWhitespaceRule.self,
+    OptionalEnumCaseMatchingRule.self,
+    OrphanedDocCommentRule.self,
     OverriddenSuperCallRule.self,
     OverrideInExtensionRule.self,
     PatternMatchingKeywordsRule.self,
+    PreferSelfTypeOverTypeOfSelfRule.self,
     PrefixedTopLevelConstantRule.self,
     PrivateActionRule.self,
     PrivateOutletRule.self,
@@ -124,6 +133,7 @@ public let masterRuleList = RuleList(rules: [
     QuickDiscouragedCallRule.self,
     QuickDiscouragedFocusedTestRule.self,
     QuickDiscouragedPendingTestRule.self,
+    RawValueForCamelCasedCodableEnumRule.self,
     ReduceBooleanRule.self,
     ReduceIntoRule.self,
     RedundantDiscardableLetRule.self,

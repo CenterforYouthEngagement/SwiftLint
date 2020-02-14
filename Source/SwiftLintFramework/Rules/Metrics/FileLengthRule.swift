@@ -11,15 +11,15 @@ public struct FileLengthRule: ConfigurationProviderRule {
         description: "Files should not span too many lines.",
         kind: .metrics,
         nonTriggeringExamples: [
-            repeatElement("print(\"swiftlint\")\n", count: 400).joined()
+            Example(repeatElement("print(\"swiftlint\")\n", count: 400).joined())
         ],
         triggeringExamples: [
-            repeatElement("print(\"swiftlint\")\n", count: 401).joined(),
-            (repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined()
+            Example(repeatElement("print(\"swiftlint\")\n", count: 401).joined()),
+            Example((repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined())
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         func lineCountWithoutComments() -> Int {
             let commentKinds = SyntaxKind.commentKinds
             let lineCount = file.syntaxKindsByLines.filter { kinds in

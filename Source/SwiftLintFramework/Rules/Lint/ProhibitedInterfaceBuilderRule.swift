@@ -11,17 +11,17 @@ public struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, ASTRule
         description: "Creating views using Interface Builder should be avoided.",
         kind: .lint,
         nonTriggeringExamples: [
-            "var label: UILabel!",
-            "@objc func buttonTapped(_ sender: UIButton) {}"
-        ].map(wrapExample),
+            wrapExample("var label: UILabel!"),
+            wrapExample("@objc func buttonTapped(_ sender: UIButton) {}")
+        ],
         triggeringExamples: [
-            "@IBOutlet ↓var label: UILabel!",
-            "@IBAction ↓func buttonTapped(_ sender: UIButton) {}"
-        ].map(wrapExample)
+            wrapExample("@IBOutlet ↓var label: UILabel!"),
+            wrapExample("@IBAction ↓func buttonTapped(_ sender: UIButton) {}")
+        ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset else {
             return []
         }
@@ -44,10 +44,10 @@ public struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, ASTRule
     }
 }
 
-private func wrapExample(_ text: String) -> String {
-    return """
+private func wrapExample(_ text: String, file: StaticString = #file, line: UInt = #line) -> Example {
+    return Example("""
     class ViewController: UIViewController {
         \(text)
     }
-    """
+    """, file: file, line: line)
 }

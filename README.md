@@ -227,7 +227,7 @@ Here's a reference of which SwiftLint version to use for a given Swift version.
 | Swift 3.x       | SwiftLint 0.25.1                 |
 | Swift 4.0-4.1.x | SwiftLint 0.28.2                 |
 | Swift 4.2.x     | SwiftLint 0.35.0                 |
-| Swift 5.0       | Latest                           |
+| Swift 5.x       | Latest                           |
 
 ## Rules
 
@@ -236,7 +236,7 @@ continues to contribute more over time.
 [Pull requests](CONTRIBUTING.md) are encouraged.
 
 You can find an updated list of rules and more information about them
-in [Rules.md](Rules.md).
+[here](https://realm.github.io/SwiftLint/rule-directory.html).
 
 You can also check [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules)
 directory to see their implementation.
@@ -368,6 +368,7 @@ type_name:
     warning: 40
     error: 50
   excluded: iPhone # excluded via string
+  allowed_symbols: ["_"] # these are allowed in type names
 identifier_name:
   min_length: # only min_length
     error: 4 # only error
@@ -393,6 +394,7 @@ custom_rules:
     excluded: ".*Test\\.swift" # regex that defines paths to exclude during linting. optional
     name: "Pirates Beat Ninjas" # rule name. optional.
     regex: "([n,N]inja)" # matching pattern
+    capture_group: 0 # number of regex capture group to highlight the rule violation at. optional.
     match_kinds: # SyntaxKinds to match. optional.
       - comment
       - identifier
@@ -443,8 +445,7 @@ the linting process.
 * Each file will be linted using the configuration file that is in its
   directory or at the deepest level of its parent directories. Otherwise the
   root configuration will be used.
-* `excluded` and `included` are ignored for nested
-  configurations.
+* `included` is ignored for nested configurations.
 
 ### Auto-correct
 
@@ -489,3 +490,8 @@ We :heart: open source software!
 See [our other open source projects](https://github.com/realm),
 read [our blog](https://realm.io/news), or say hi on twitter
 ([@realm](https://twitter.com/realm)).
+
+<img src="assets/macstadium.png" width="184" />
+
+Our thanks to MacStadium for providing a Mac Mini to run our performance
+tests.

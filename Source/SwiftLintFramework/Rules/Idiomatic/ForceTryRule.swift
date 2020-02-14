@@ -11,22 +11,22 @@ public struct ForceTryRule: ConfigurationProviderRule, AutomaticTestableRule {
         description: "Force tries should be avoided.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            """
+            Example("""
             func a() throws {}
             do {
               try a()
             } catch {}
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             func a() throws {}
             ↓try! a()
-            """
+            """)
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.match(pattern: "try!", with: [.keyword]).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,

@@ -11,12 +11,12 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         name: "Leading Whitespace",
         description: "Files should not contain leading whitespace.",
         kind: .style,
-        nonTriggeringExamples: [ "//\n" ],
-        triggeringExamples: [ "\n", " //\n" ],
-        corrections: ["\n //": "//"]
+        nonTriggeringExamples: [ Example("//\n") ],
+        triggeringExamples: [ Example("\n"), Example(" //\n") ],
+        corrections: [Example("\n //"): Example("//")]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let countOfLeadingWhitespace = file.contents.countOfLeadingCharacters(in: .whitespacesAndNewlines)
         if countOfLeadingWhitespace == 0 {
             return []
@@ -31,7 +31,7 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
                                reason: reason)]
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         let whitespaceAndNewline = CharacterSet.whitespacesAndNewlines
         let spaceCount = file.contents.countOfLeadingCharacters(in: whitespaceAndNewline)
         guard spaceCount > 0,

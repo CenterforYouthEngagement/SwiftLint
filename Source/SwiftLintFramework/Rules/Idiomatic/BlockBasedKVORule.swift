@@ -12,33 +12,32 @@ public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule, AutomaticTe
         description: "Prefer the new block based KVO API with keypaths when using Swift 3.2 or later.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            """
+            Example("""
             let observer = foo.observe(\\.value, options: [.new]) { (foo, change) in
                print(change.newValue)
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             class Foo: NSObject {
               override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
                                           change: [NSKeyValueChangeKey : Any]?,
                                           context: UnsafeMutableRawPointer?) {}
             }
-            """
-           ,
-            """
+            """),
+            Example("""
             class Foo: NSObject {
               override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
                                           change: Dictionary<NSKeyValueChangeKey, Any>?,
                                           context: UnsafeMutableRawPointer?) {}
             }
-            """
+            """)
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard SwiftVersion.current >= .four, kind == .functionMethodInstance,
             dictionary.enclosedSwiftAttributes.contains(.override),
             dictionary.name == "observeValue(forKeyPath:of:change:context:)",
@@ -67,10 +66,10 @@ public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule, AutomaticTe
     }
 }
 
-private extension Array where Element == [String: SourceKitRepresentable] {
+private extension Array where Element == SourceKittenDictionary {
     var parameterTypes: [String] {
         return compactMap { element in
-            guard element.kind.flatMap(SwiftDeclarationKind.init) == .varParameter else {
+            guard element.declarationKind == .varParameter else {
                 return nil
             }
 

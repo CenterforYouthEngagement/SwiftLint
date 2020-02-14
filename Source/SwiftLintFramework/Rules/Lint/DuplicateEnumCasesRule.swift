@@ -11,34 +11,34 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule, Automa
         description: "Enum can't contain multiple cases with the same name.",
         kind: .lint,
         nonTriggeringExamples: [
-            """
+            Example("""
             enum PictureImport {
                 case addImage(image: UIImage)
                 case addData(data: Data)
             }
-            """,
-            """
+            """),
+            Example("""
             enum A {
                 case add(image: UIImage)
             }
             enum B {
                 case add(image: UIImage)
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             enum PictureImport {
                 case ↓add(image: UIImage)
                 case addURL(url: URL)
                 case ↓add(data: Data)
             }
-            """
+            """)
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .enum else {
             return []
         }
@@ -47,11 +47,12 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule, Automa
             .compactMap { substructureElements(of: $0, matching: .enumelement) }
             .flatMap { $0 }
 
-        var elementsByName: [String: [Int]] = [:]
+        var elementsByName: [String: [ByteCount]] = [:]
         for element in enumElements {
             guard let name = element.name,
                 let nameWithoutParameters = name.split(separator: "(").first,
-                let offset = element.offset else {
+                let offset = element.offset
+            else {
                 continue
             }
 
@@ -67,9 +68,9 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule, Automa
             }
     }
 
-    private func substructureElements(of dict: [String: SourceKitRepresentable],
-                                      matching kind: SwiftDeclarationKind) -> [[String: SourceKitRepresentable]] {
+    private func substructureElements(of dict: SourceKittenDictionary,
+                                      matching kind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
         return dict.substructure
-            .filter { $0.kind.flatMap(SwiftDeclarationKind.init) == kind }
+            .filter { $0.declarationKind == kind }
     }
 }
