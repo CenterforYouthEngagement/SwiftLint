@@ -8,6 +8,33 @@ _If you have commit access to SwiftLint and believe your change to be trivial
 and not worth waiting for review, you may open a pull request and merge
 immediately, but this should be the exception, not the norm._
 
+### Building And Running Locally
+
+#### Using Xcode
+
+1. `git clone https://github.com/realm/SwiftLint.git`
+1. `cd SwiftLint`
+1. `xed .`
+1. Select the "swiftlint" scheme
+1. `cmd-opt-r` open the scheme options
+1. Set the "Arguments Passed On Launch" you want in the "Arguments" tab
+1. Set the "Working Directory" you want in the "Options" tab
+1. Hit "Run"
+
+|Arguments|Options|
+|-|-|
+|![image](https://user-images.githubusercontent.com/474794/93893073-1676b000-fca2-11ea-9428-20423c5f5237.png)|![image](https://user-images.githubusercontent.com/474794/93893135-27bfbc80-fca2-11ea-805a-ee21b446c3f0.png)|
+
+Then you can use the full power of Xcode/LLDB/Instruments to develop and debug your changes to SwiftLint.
+
+#### Using the command line
+
+1. `git clone https://github.com/realm/SwiftLint.git`
+1. `cd SwiftLint`
+1. `swift build [-c release]`
+1. Use the produced `swiftlint` binary from the command line, either by running `swift run [-c release] [swiftlint] [arguments]` or by invoking the binary directly at `.build/[release|debug]/swiftlint`
+1. [Optional] Attach LLDB: `lldb -- .build/[release|debug]/swiftlint [arguments]`
+
 ### Submodules
 
 This SwiftLint repository uses submodules for its dependencies.
@@ -65,11 +92,11 @@ configuration object via the `configuration` property:
 * If none of the provided `RuleConfiguration`s are applicable, you can create one
   specifically for your rule.
 
-See [`ForceCastRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/ForceCastRule.swift)
+See [`ForceCastRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/Idiomatic/ForceCastRule.swift)
 for a rule that allows severity configuration,
-[`FileLengthRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/FileLengthRule.swift)
+[`FileLengthRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/Metrics/FileLengthRule.swift)
 for a rule that has multiple severity levels,
-[`IdentifierNameRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/IdentifierNameRule.swift)
+[`IdentifierNameRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/Style/IdentifierNameRule.swift)
 for a rule that allows name evaluation configuration:
 
 ``` yaml
@@ -112,7 +139,7 @@ the `CHANGELOG.md` file.
 We follow the same syntax as CocoaPods' CHANGELOG.md:
 
 1. One Markdown unnumbered list item describing the change.
-2. 2 trailing spaces on the last line describing the change.
+2. 2 trailing spaces on the last line describing the change (so that Markdown renders each change [on its own line](https://daringfireball.net/projects/markdown/syntax#p)).
 3. A list of Markdown hyperlinks to the contributors to the change. One entry
    per line. Usually just one.
 4. A list of Markdown hyperlinks to the issues the change addresses. One entry

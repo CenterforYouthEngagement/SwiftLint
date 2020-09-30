@@ -22,7 +22,7 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
@@ -51,15 +51,15 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
         let isInObjcVisibleScope = { () -> Bool in
             guard let parentStructure = parentStructure,
                 let kind = dictionary.declarationKind,
-                let parentKind = parentStructure.declarationKind,
-                let acl = dictionary.accessibility else {
+                let parentKind = parentStructure.declarationKind else {
                     return false
             }
 
             let isInObjCExtension = [.extensionClass, .extension].contains(parentKind) &&
                 parentStructure.enclosedSwiftAttributes.contains(.objc)
 
-            let isInObjcMembers = parentStructure.enclosedSwiftAttributes.contains(.objcMembers) && !acl.isPrivate
+            let isPrivate = dictionary.accessibility?.isPrivate ?? false
+            let isInObjcMembers = parentStructure.enclosedSwiftAttributes.contains(.objcMembers) && !isPrivate
 
             guard isInObjCExtension || isInObjcMembers else {
                 return false

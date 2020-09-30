@@ -235,10 +235,24 @@ internal func makeConfig(_ ruleConfiguration: Any?, _ identifier: String,
 }
 
 private func testCorrection(_ correction: (Example, Example),
-                            configuration config: Configuration,
+                            configuration: Configuration,
                             testMultiByteOffsets: Bool) {
+#if os(Linux)
+    guard correction.0.testOnLinux else {
+        return
+    }
+#endif
+    var config = configuration
+    if let correctionConfiguration = correction.0.configuration,
+        case let .whitelisted(whitelistedRules) = configuration.rulesMode,
+        let firstWhitelistedRule = whitelistedRules.first,
+        case let configDict = ["whitelist_rules": whitelistedRules, firstWhitelistedRule: correctionConfiguration],
+        let typedConfiguration = Configuration(dict: configDict) {
+        config = configuration.merge(with: typedConfiguration)
+    }
+
     config.assertCorrection(correction.0, expected: correction.1)
-    if testMultiByteOffsets {
+    if testMultiByteOffsets && correction.0.testMultiByteOffsets {
         config.assertCorrection(addEmoji(correction.0), expected: addEmoji(correction.1))
     }
 }
@@ -271,7 +285,7 @@ extension XCTestCase {
             ruleConfiguration,
             ruleDescription.identifier,
             skipDisableCommandTests: skipDisableCommandTests) else {
-                XCTFail("Failed to create configuration", file: file, line: line)
+                XCTFail("Failed to create configuration", file: (file), line: line)
                 return
         }
 
@@ -328,7 +342,7 @@ extension XCTestCase {
             XCTAssertEqual(
                 triggers.flatMap({ makeViolations($0.with(code: "/*\n  " + $0.code + "\n */")) }).count,
                 commentDoesntViolate ? 0 : triggers.count,
-                file: file, line: line
+                file: (file), line: line
             )
         }
 
@@ -337,19 +351,21 @@ extension XCTestCase {
             XCTAssertEqual(
                 triggers.flatMap({ makeViolations($0.with(code: $0.code.toStringLiteral())) }).count,
                 stringDoesntViolate ? 0 : triggers.count,
-                file: file, line: line
+                file: (file), line: line
             )
         }
 
         // "disable" commands doesn't violate
         for command in disableCommands {
             XCTAssert(triggers.flatMap({ makeViolations($0.with(code: command + $0.code)) }).isEmpty,
-                      file: file, line: line)
+                      file: (file), line: line)
         }
     }
 
     func verifyCorrections(_ ruleDescription: RuleDescription, config: Configuration,
                            disableCommands: [String], testMultiByteOffsets: Bool) {
+        parserDiagnosticsDisabledForTests = true
+
         // corrections
         ruleDescription.corrections.forEach {
             testCorrection($0, configuration: config, testMultiByteOffsets: testMultiByteOffsets)
@@ -446,13 +462,13 @@ extension XCTestCase {
         closure: () throws -> Void) {
         do {
             try closure()
-            XCTFail("No error caught", file: file, line: line)
+            XCTFail("No error caught", file: (file), line: line)
         } catch let rError as T {
             if error != rError {
-                XCTFail("Wrong error caught. Got \(rError) but was expecting \(error)", file: file, line: line)
+                XCTFail("Wrong error caught. Got \(rError) but was expecting \(error)", file: (file), line: line)
             }
         } catch {
-            XCTFail("Wrong error caught", file: file, line: line)
+            XCTFail("Wrong error caught", file: (file), line: line)
         }
     }
 }
